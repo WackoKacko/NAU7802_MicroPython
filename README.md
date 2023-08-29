@@ -11,5 +11,5 @@ You may be delighted to hear that there is a translation of the CompleteScale ex
 
 Hope I helped someone.
 
-_“ Ka-chow! ”_\
+_“Ka-chow!”_\
 _-Lightning McQueen_
