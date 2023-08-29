@@ -41,8 +41,8 @@ PU_CTRL_Bits = {'NAU7802_PU_CTRL_RR': 0,
                 'NAU7802_PU_CTRL_AVDDS': 7}
 
 # Bits within the CTRL1 register
-CTRL1_Bits = {'NAU7802_CTRL1_GAIN': 0, #in the master branch, i think this is 2 for some reason?
-              'NAU7802_CTRL1_VLDO': 3, #and this is 5? 
+CTRL1_Bits = {'NAU7802_CTRL1_GAIN': 0, #in longapalooza's repo, i think this is 2 for some reason?
+              'NAU7802_CTRL1_VLDO': 3, #and this is 5? 0 and 3 are correct.
               'NAU7802_CTRL1_DRDY_SEL': 6,
               'NAU7802_CTRL1_CRP': 7}
 
