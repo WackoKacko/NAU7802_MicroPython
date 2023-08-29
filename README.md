@@ -1,5 +1,5 @@
 # NAU7802_MicroPython
-### MicroPython library for the NAU7802 chip
+### MicroPython library for the NAU7802 chip using the I2C interface. 
 
 Hey, guys. Like you, I needed a MicroPython library for the NAU7802. I found the [CircuitPython library](https://github.com/adafruit/CircuitPython_NAU7802), and porting that to MicroPython proved a headache, but I was able to take the [plain Python library](https://github.com/longapalooza/nau7802py) for it and make some very slight modifications so it uses MicroPython's native _machine.I2C_.
 
