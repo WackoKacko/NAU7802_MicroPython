@@ -1,50 +1,89 @@
-# import nau7802py, time
+import nau7802py, time
 
-# myScale = nau7802py.NAU7802() # Create instance of the NAU7802 class
+myScale = nau7802py.NAU7802() # Create instance of the NAU7802 class
 
-# #
-# # Begin void setup() equivalent
-# #
+settingsDetected = False # Used to prompt user to calibrate their scale
 
-# print('Qwiic Scale Example')
+# Create an array to take average of weights. This helps smooth out jitter. ... is this a moving average??
+AVG_SIZE = 10
+avgWeights = []
+avgWeightSpot = 0
 
-# if not myScale.begin():
-#     print('Scale not detected. Please check wiring. Freezing...')
-#     while True:
-#         pass
-  
-# print('Scale detected!')
+# Gives user the ability to set a known weight on the scale and calculate a calibration factor
+def calibrateScale():
+    print('')
+    print('')
+    print('Scale calibration')
+    
+    _ = input('Setup scale with no weight on it. Press a key when ready.')
 
-# myScale.setLDO(nau7802py.NAU7802_LDO_Values['NAU7802_LDO_4V5']) #AVDD can be set to 2.4V, 2.7V, 3.0V, 3.3V, 3.6V, 3.9V, 4.2V, or 4.5V. Voltae supply to LDO must be at least 0.3V greater than selected AVDD!
+    myScale.calculateZeroOffset(64)    # Zero or Tare the scale. Average over 64 readings.
+    print('New zero offset: ', myScale.getZeroOffset())
 
-# myScale.setGain(nau7802py.NAU7802_Gain_Values['NAU7802_GAIN_128']) # Gain can be set to 1, 2, 4, 8, 16, 32, 64, or 128.
+    _ = input('Place known weight on scale. Press a key when weight is in place and stable.')
 
-# myScale.setSampleRate(nau7802py.NAU7802_SPS_Values['NAU7802_SPS_10']) # Sample rate can be set to 10, 20, 40, 80, or 320Hz
+    weightOnScale = input("Please enter the weight, without units, currently sitting on the scale (for example '4.25'): ")
+    print('')
 
-# myScale.calibrateAFE() # Does an internal calibration. Recommended after power up, gain changes, sample rate changes, or channel changes.
+    myScale.calculateCalibrationFactor(float(weightOnScale), 64)    # Tell the library how much weight is currently on it
+    print('New cal factor: ', round(myScale.getCalibrationFactor(), 3))
 
-# #
-# # Begin void loop() equivalent
-# #
-
-# while True:
-#     if myScale.available():
-#         currentReading = myScale.getReading();
-#         print('Reading: ', currentReading)
-
+    print('New Scale Reading: ', round(myScale.getWeight(), 2))
 
 #
-# Here's some blinkLED code if you need a Pymakr sanity check.
+# Begin void setup() equivalent
 #
-# import machine #you can ignore the yellow underline here
-# import time
 
-# led_pin = machine.Pin(2, machine.Pin.OUT) #change 2 to correspond to your board's built-in LED. I used the ESP32 WROOM.
+print('Qwiic Scale Example')
 
-# while True:
-#     led_pin.value(not led_pin.value())
-#     print("ON...")
-#     time.sleep(1)
-#     led_pin.value(not led_pin.value())
-#     print("OFF...")
-#     time.sleep(1)
+if not myScale.begin():
+    print('Scale not detected. Please check wiring. Freezing...')
+    while True:
+        pass
+
+print('Scale detected!')
+
+myScale.setSampleRate(nau7802py.NAU7802_SPS_Values['NAU7802_SPS_320'])    # Increase to max sample rate
+myScale.calibrateAFE()    # Re-cal analog front end when we change gain, sample rate, or channel
+
+print('Zero offset: ', myScale.getZeroOffset())
+print('Calibration factor: ', myScale.getCalibrationFactor())
+
+#
+# Begin void loop() equivalent
+#
+
+while True:
+    
+    if myScale.available():
+        currentReading = myScale.getReading()
+        currentWeight = myScale.getWeight()
+        
+        print('Reading: ', currentReading, end = '')
+        print('\tWeight: ', round(currentWeight, 2), end = '')    # Print 2 decimal places
+        
+        avgWeights.append(currentWeight)
+        if len(avgWeights) == AVG_SIZE:
+            avgWeights.pop(0)
+        
+        avgWeight = 0
+        for x in range(len(avgWeights)):
+            avgWeight += avgWeights[x]
+        avgWeight /= AVG_SIZE
+        
+        print('\tAvgWeight: ', round(avgWeight, 2))    # Print 2 decimal places
+        
+        if settingsDetected == False:
+            r = input("\tScale not calibrated. Press 'c'. ")
+            if r == 'c':
+                calibrateScale()
+        
+        else:
+            r = input('Calibrate (c), Tare (t), or Read (r) ')
+            if r == 'c':
+                calibrateScale() # Calibrate
+            elif r == 't':
+                myScale.calculateZeroOffset() # Tare the scale
+        
+        print('')
+        time.sleep(2)

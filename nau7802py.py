@@ -180,23 +180,26 @@ class NAU7802():
         return self.setRegister(registerAddress, value)
 
     # Return the average of a given number of readings
-    # Gives up after 1000ms so don't call this function to average 8 samples setup at 1Hz output (requires 8s)
+    # Ignore this: Gives up after 1000ms so don't call this function to average 8 samples setup at 1Hz output (requires 8s)
     def getAverage(self, averageAmount):    # Return the average of a given number of readings
         total = 0
         samplesAcquired = 0
 
         startTime = time.time()
         while True:
-            try:
-                total += self.getReading()
-            except:
-                return False
-            if samplesAcquired == averageAmount:
-                break    # All done
-            if time.time() - startTime > 1:
-                return False    # Timeout - Bail with error
-            samplesAcquired += 1
-            time.sleep(0.001)
+            if(self.available()):
+                try:
+                    total += self.getReading()
+                    samplesAcquired += 1
+                except:
+                    return False
+                if samplesAcquired == averageAmount:
+                    break    # All done
+                if time.time() - startTime > 8:
+                    print("Timeout bail in getAverage()!")
+                    return False    # Timeout - Bail with error
+                # samplesAcquired += 1
+            # time.sleep(0.001)
         total /= averageAmount;
         return total
 
