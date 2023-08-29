@@ -5,7 +5,6 @@ myScale = nau7802py.NAU7802() # Create instance of the NAU7802 class
 #
 # Begin void setup() equivalent
 #
-
 print('Qwiic Scale Example')
 
 if not myScale.begin():
@@ -26,16 +25,15 @@ myScale.calibrateAFE() # Does an internal calibration. Recommended after power u
 #
 # Begin void loop() equivalent
 #
-
 while True:
     if myScale.available():
         currentReading = myScale.getReading();
         print('Reading: ', currentReading)
 
 
-#
-# Here's some blinkLED code if you need a Pymakr sanity check.
-#
+##
+## Here's some blinkLED code if you need a Pymakr sanity check.
+##
 # import machine #you can ignore the yellow underline here
 # import time
 
