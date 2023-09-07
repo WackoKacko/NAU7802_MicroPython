@@ -7,7 +7,7 @@ _Definitely_ not thoroughly tested, but it seems to be working for what I use it
 
 I've been developing in Pymakr on VSCode, which is why the contents of this repo are what they are. It's pretty neat, I recommend it, despite its 2-star rating on the VSCode extensions page. Here's a nice tutorial on how to use it: [link](https://www.youtube.com/watch?v=YOeV14SESls). I've included a blinkLED example at the bottom of _main.py_ in case you'd like a sanity check.
 
-There is a translation of the CompleteScale example from Sparkfun ([link](https://github.com/sparkfun/SparkFun_Qwiic_Scale_NAU7802_Arduino_Library/blob/master/examples/Example2_CompleteScale/Example2_CompleteScale.ino)), but it doesn't yet run well with this library. You'll find it [here](https://github.com/longapalooza/nau7802py/blob/master/Example2_CompleteScale.py), in the original NAU7802 Python library repo. I'm trying to get it functional, but maybe without EEProm.
+I've made a translation of the CompleteScale example from Sparkfun ([link](https://github.com/sparkfun/SparkFun_Qwiic_Scale_NAU7802_Arduino_Library/blob/master/examples/Example2_CompleteScale/Example2_CompleteScale.ino)). ("FullScale.py" in this fork/repo). One thing I had to change was adding a button to do taring and calibration because implementing non-blocking user input over USB turned out to be too much of a headache for me. Short press is tare, long press is calibration.
 
 Hope I helped someone.
 
