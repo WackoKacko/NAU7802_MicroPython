@@ -14,7 +14,7 @@ if not myScale.begin():
   
 print('Scale detected!')
 
-myScale.setLDO(nau7802py.NAU7802_LDO_Values['NAU7802_LDO_4V5']) #AVDD can be set to 2.4V, 2.7V, 3.0V, 3.3V, 3.6V, 3.9V, 4.2V, or 4.5V. Voltae supply to LDO must be at least 0.3V greater than selected AVDD!
+myScale.setLDO(nau7802py.NAU7802_LDO_Values['NAU7802_LDO_3V0']) #AVDD (output) can be set to 2.4V, 2.7V, 3.0V, 3.3V, 3.6V, 3.9V, 4.2V, or 4.5V. Digital voltae supply (input) to LDO must be at least 0.3V greater than selected AVDD!
 
 myScale.setGain(nau7802py.NAU7802_Gain_Values['NAU7802_GAIN_128']) # Gain can be set to 1, 2, 4, 8, 16, 32, 64, or 128.
 
