@@ -1,8 +1,13 @@
-import ujson, time, nau7802py, sys
+import sys
+import time
+import ujson
 
-from machine import Pin
+from machine import SoftI2C as I2C, Pin
+import nau7802py
 
-myScale = nau7802py.NAU7802() # Create instance of the NAU7802 class
+
+i2c = I2C(scl=Pin(22), sda=Pin(21), freq=100000)
+myScale = nau7802py.NAU7802(i2c) # Create instance of the NAU7802 class
 
 # Gives user the ability to set a known weight on the scale and calculate a calibration factor
 def calibrateScale():
@@ -121,27 +126,3 @@ while True:
         print("Reading: " + str(round(currentReading)) + "\t", end='') # specifying "end=''" omits "\n" at the end
         print("Weight: " + str(round(currentWeight, 2)))    # Print 2 decimal places
 
-
-
-#
-# Simple LED and button code as a sanity test
-#
-# from machine import Pin
-# import utime
-
-# last_time = utime.ticks_ms()
-# interval = 500  # 500 milliseconds
-
-# button_pin = Pin(15, Pin.IN, Pin.PULL_UP)
-# led_pin = Pin(2, Pin.OUT) #change 2 to correspond to your board's built-in LED. I used the ESP32 WROOM.
-
-# while True:
-#     # current_time = utime.ticks_ms()
-#     # if utime.ticks_diff(current_time, last_time) >= interval:
-#     #     print("Value: ", button_pin.value())
-#     #     last_time = current_time
-
-#     if button_pin.value() == 1:
-#         led_pin.value(1)
-#     else:
-#         led_pin.value(0)
