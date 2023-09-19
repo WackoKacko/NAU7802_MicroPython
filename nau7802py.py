@@ -1,4 +1,4 @@
-from machine import I2C, Pin
+from machine import Pin
 import time
 
 # Register Map
@@ -105,9 +105,9 @@ NAU7802_Cal_Status = {'NAU7802_CAL_SUCCESS': 0,
 
 class NAU7802():
     # Default constructor
-    def __init__(self, i2cPort = 1, deviceAddress = 0x2A, zeroOffset = False,
+    def __init__(self, i2c, deviceAddress = 0x2A, zeroOffset = False,
                  calibrationFactor = False):
-        self.bus = I2C(0, scl=Pin(22), sda=Pin(21), freq=100000) #change the pins here for your own MCU
+        self.bus = i2c
         self.deviceAddress = deviceAddress    # Default unshifted 7-bit address of the NAU7802
         # y = mx + b
         self.zeroOffset = zeroOffset;    # This is b
@@ -359,11 +359,6 @@ class NAU7802():
 
         return self.setBit(PU_CTRL_Bits['NAU7802_PU_CTRL_AVDDS'], Scale_Registers['NAU7802_PU_CTRL'])    # Enable the internal LDO
 
-    # def write_word_data(i2c, deviceAddress, register, data):
-    #     # Convert 16-bit data to a bytearray (low byte first)
-    #     data_bytes = bytearray([data & 0xFF, (data >> 8) & 0xFF])
-    #     # Write the word to the specified register
-    #     i2c.writeto_mem(deviceAddress, register, data_bytes)
 
     # Send a given value to be written to given address
     # Return true if successful
@@ -371,7 +366,6 @@ class NAU7802():
         try:
             # data_bytes = bytearray([value & 0xFF, (value >> 8) & 0xFF])
             self.bus.writeto_mem(self.deviceAddress, registerAddress, bytes([value]))
-            # self.bus.write_word_data(, self.deviceAddress, registerAddress, value)
         except Exception as e:
             print("setRegister won't work! ", e)
             return False    # Sensor did not ACK

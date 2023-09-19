@@ -1,10 +1,12 @@
-import nau7802py, time
+from machine import SoftI2C as I2C, Pin
 
-myScale = nau7802py.NAU7802() # Create instance of the NAU7802 class
+import nau7802py
 
-#
-# Begin void setup() equivalent
-#
+
+i2c = I2C(scl=Pin(22), sda=Pin(21), freq=100000)
+myScale = nau7802py.NAU7802(i2c) # Create instance of the NAU7802 class
+
+
 print('Qwiic Scale Example')
 
 if not myScale.begin():
@@ -22,27 +24,8 @@ myScale.setSampleRate(nau7802py.NAU7802_SPS_Values['NAU7802_SPS_10']) # Sample r
 
 myScale.calibrateAFE() # Does an internal calibration. Recommended after power up, gain changes, sample rate changes, or channel changes.
 
-#
-# Begin void loop() equivalent
-#
+
 while True:
     if myScale.available():
         currentReading = myScale.getReading();
         print('Reading: ', currentReading)
-
-
-##
-## Here's some blinkLED code if you need a Pymakr sanity check.
-##
-# import machine #you can ignore the yellow underline here
-# import time
-
-# led_pin = machine.Pin(2, machine.Pin.OUT) #change 2 to correspond to your board's built-in LED. I used the ESP32 WROOM.
-
-# while True:
-#     led_pin.value(not led_pin.value())
-#     print("ON...")
-#     time.sleep(1)
-#     led_pin.value(not led_pin.value())
-#     print("OFF...")
-#     time.sleep(1)
